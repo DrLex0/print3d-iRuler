@@ -3,6 +3,7 @@
 // License: Creative Commons - Attribution - Share Alike
 // 2017-04-21: v2: added inches option
 // 2021-12-11: v3: added dual units & rounded corners; dropped shrinkage compensation (it makes more sense to always generate 1:1 models and let the user do the scaling in their slicer)
+// 2024-12-19: v3.1: added option to make subdivision recesses horizontal
 
 /* [General] */
 Units="centimeters"; //[centimeters, inches, both]
@@ -32,6 +33,8 @@ NumberOffset=0; //[-2:.5:2]
 /* [Ruler lines] */
 UnitsLineWidth=.5; //[.3:.05:.7]
 SubdivisionsGapWidth=.3; //[.2:.05:.5]
+// Enabling this will make subdivision recesses horizontal, allowing to give them a different color with a filament change.
+AllowZColorChange="no"; //[yes, no]
 
 /* [Hidden] */
 scaleLength = Units == "centimeters" ? RulerLength*10 : RulerLength*25.4;
@@ -44,6 +47,8 @@ Inverted=(ReverseDesign == "yes");
 TextFont = BoldFont == "no" ? Font : str(Font, ":style=Bold");
 NumberFont = BoldNumbers == "no" ? Font2 : str(Font2, ":style=Bold");
 textCenterY = (Units == "both") ? RulerWidth/2 - 5 : RulerWidth/2 + 3;
+recessAngle = (AllowZColorChange == "no") ? 8.5 : 0;
+recessY = (AllowZColorChange == "no") ? -4.95 : -5.05;
 
 
 module unitLines(unit, length) {
@@ -59,21 +64,21 @@ module subdivisions(unit, length) {
         for (i=[1:length*10]) {
             if(i % 10) {
                 GapLength=(i % 5) ? 5 : 6.5;
-                translate([i-SubdivisionsGapWidth/2,-4.95,0.5]) rotate([8.5,0,0]) cube([SubdivisionsGapWidth,GapLength,.7]);
+                translate([i-SubdivisionsGapWidth/2,recessY,0.5]) rotate([recessAngle,0,0]) cube([SubdivisionsGapWidth,GapLength,2]);
             }
         }
     }
     else {
         for (i=[0:length-1]) {
-            translate([(i+0.5)*25.4-SubdivisionsGapWidth/2,-4.95,0.5]) rotate([8.5,0,0]) cube([SubdivisionsGapWidth,8,.7]);
+            translate([(i+0.5)*25.4-SubdivisionsGapWidth/2,recessY,0.5]) rotate([recessAngle,0,0]) cube([SubdivisionsGapWidth,8,2]);
             for (j=[0:1]) {
-                translate([(i+0.25+j*0.5)*25.4-SubdivisionsGapWidth/2,-4.95,0.5]) rotate([8.5,0,0]) cube([SubdivisionsGapWidth,6,.7]);
+                translate([(i+0.25+j*0.5)*25.4-SubdivisionsGapWidth/2,recessY,0.5]) rotate([recessAngle,0,0]) cube([SubdivisionsGapWidth,6,2]);
             }
             for (j=[0:3]) {
-                translate([(i+0.125+j*0.25)*25.4-SubdivisionsGapWidth/2,-4.95,0.5]) rotate([8.5,0,0]) cube([SubdivisionsGapWidth,4.25,.7]);
+                translate([(i+0.125+j*0.25)*25.4-SubdivisionsGapWidth/2,recessY,0.5]) rotate([recessAngle,0,0]) cube([SubdivisionsGapWidth,4.25,2]);
             }
             for (j=[0:7]) {
-                translate([(i+0.0625+j*0.125)*25.4-SubdivisionsGapWidth/2,-4.95,0.5]) rotate([8.5,0,0]) cube([SubdivisionsGapWidth,2.5,.7]);
+                translate([(i+0.0625+j*0.125)*25.4-SubdivisionsGapWidth/2,recessY,0.5]) rotate([recessAngle,0,0]) cube([SubdivisionsGapWidth,2.5,2]);
             }
         }
     }
@@ -107,6 +112,7 @@ module label() {
             text(RulerText,FontSize,font=TextFont,valign="center",$fn=24);
     }
 }
+
 
 intersection() {
 difference() {

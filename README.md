@@ -31,6 +31,8 @@ Open the `.scad` file in [OpenSCAD](https://www.openscad.org/) and **[use the Op
 
 If the subdivision lines are set too narrow, they will fuse together and become invisible. You can do some tiny test prints with the ruler set to 2 cm or 1 inch to find a good setting, but the default should be OK for most printers.
 
+If you want to give the subdivision lines a different color by changing filaments at a certain Z height, you must enable the ‘AllowZColorChange’ option. (Otherwise the lines follow the same slope as the ruler's edges, which looks nicer in a single-filament print, but does not allow a Z color change.)
+
 Not all Unicode characters may work, although the usual Latin characters like ‘é’ should be directly usable in OpenSCAD without having to use escape codes. Non-European scripts can be usable if you change the font (you will have to do that in the code, there is no customizer option for this).
 
 ### Accuracy
@@ -57,6 +59,9 @@ Added inches option which has subdivisions down to 1/16th.
 
 ### 2021/12/12
 Migrated to GitHub, added option for combined cm and inches, and rounded corners.
+
+### 2024/12/19
+Added `AllowZColorChange` option.
 
 
 ## TAGS
